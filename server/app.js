@@ -14,6 +14,9 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+const apiRouter = require('./routes/api');
+app.use('/api', apiRouter);
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, err => {
