@@ -1,4 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Jua&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300..700;1,300..700&display=swap"); */
+
+:root {
+    --bg: #ffc3a1;
+}
+
 body {
-  margin: 0px;
-  padding: 0px;
+    margin: 0px;
+    padding: 0px;
+    background-color: var(--bg);
+    font-family: "Jua", sans-serif;
+    font-style: normal;
+}
+
+.background {
+    height: 100vh;
+    width: 100vw;
+    background: url("./assets/bg.png") no-repeat center center/cover;
+    position: absolute;
+    z-index: -1;
+}
+
+.create-new {
+    height: 60vh;
+    width: 14vw;
+    background: url("./assets/create_new.png") no-repeat center center/contain;
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    cursor: pointer;
+}
+
+.waving-mouse {
+    height: 40vh;
+    width: 18vw;
+    background: url("./assets/mouse_waving.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 0%;
+    left: 1%;
+}
+
+.modal {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.modal-content {
+    height: 30vh;
+    width: 60vw;
+    background-color: var(--bg);
+    border-radius: 15px;
+    box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    font-size: 4vw;
+    top: 0;
+    right: 3%;
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+.modal-content h2 {
+    font-size: 3vw;
+    text-align: center;
+}
+
+.buttons-list {
+    display: flex;
+    justify-content: center;
+}
+
+.button {
+    height: 8vh;
+    width: 16vw;
+    cursor: pointer;
+}
+
+.adv-btn {
+    background: url("./assets/Adventure_btn.png") no-repeat center center/contain;
+}
+
+.fan-btn {
+    background: url("./assets/Fantasy_btn.png") no-repeat center center/contain;
+}
+
+.mys-btn {
+    background: url("./assets/Mystery_btn.png") no-repeat center center/contain;
 }

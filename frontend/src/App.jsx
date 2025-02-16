@@ -1,11 +1,7 @@
-import './App.css'
-import LoginButton from './components/LoginButton'
+import LoginButton from "./components/LoginButton";
 
 function App() {
-
-  return (
-      <LoginButton />
-  )
+    return <LoginButton />;
 }
 
-export default App
+export default App;
