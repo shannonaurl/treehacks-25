@@ -119,7 +119,7 @@ router.get("/voice", async (req, res) => {
 const lumaClient = new LumaAI({ apiKey: process.env.LUMAAI_API_KEY });
 router.get('/image', async (req, res) => {
     const { prompt } = req.query;
-    let generation = await lumaClient.generations.image.create({ prompt: prompt, model: "photon-flash-1" });
+    let generation = await lumaClient.generations.image.create({ prompt: prompt, model: "photon-flash-1", aspect_ratio: "9:16" });
 
     let completed = false;
     while (!completed) {
