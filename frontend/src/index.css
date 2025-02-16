@@ -93,6 +93,53 @@ body {
     cursor: pointer;
 }
 
+.create-new {
+    height: 60vh;
+    width: 14vw;
+    background: url("./assets/create_new.png") no-repeat center center/contain;
+    position: absolute;
+    top: 30%;
+    left: 35%;
+    cursor: pointer;
+}
+
+.adventure-book {
+    background: url("./assets/Adventure_Book.png") no-repeat center center/contain;
+}
+
+.fantasy-book {
+    background: url("./assets/Fantasy_Book.png") no-repeat center center/contain;
+}
+
+.mystery-book {
+    background: url("./assets/Mystery_Book.png") no-repeat center center/contain;
+}
+
+.select {
+    height: 60vh;
+    width: 11vw;
+    cursor: pointer;
+}
+
+.list-title {
+    font-size: 1.3vw;
+    text-align: center;
+    transform: rotate(90deg) translateX(120%);
+}
+
+.all-books {
+    position: absolute;
+    width: 100vw;
+    height: 70vh;
+    top: 25%;
+    left: 47%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
 .waving-mouse {
     height: 40vh;
     width: 18vw;
@@ -180,11 +227,36 @@ body {
     box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.2);
 }
 
+.loading {
+    font-size: 4vw;
+}
+
+.speaking-mouse {
+    height: 15vw;
+    width: 15vw;
+    background: url("./assets/speaking_mouse.gif") no-repeat center center/contain;
+    position: absolute;
+    transform: rotate(-10deg);
+    top: 10%;
+    left: 3%;
+}
+
 .page {
     display: flex !important;
     justify-content: center;
     align-items: center;
-    font-size: 3vw;
+}
+
+.page .text {
+    font-size: 2vw;
+    padding: 1.6vw;
+}
+
+.page .image {
+    height: 28vw;
+    width: 16vw;
+    padding: 2vw;
+    border-radius: 10px;
 }
 
 .page:nth-child(2n) {
@@ -203,4 +275,59 @@ body {
     bottom: 1%;
     right: 16%;
     cursor: pointer;
+}
+
+.start-btn {
+    height: 7vh;
+    width: 20vw;
+    background: url("./assets/start_btn.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 0%;
+    left: 40%;
+    cursor: pointer;
+}
+
+.stop-btn {
+    height: 7vh;
+    width: 20vw;
+    background: url("./assets/stop_btn.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 0%;
+    left: 40%;
+    cursor: pointer;
+}
+
+.mic {
+    height: 6vh;
+    width: 6vw;
+    position: absolute;
+    bottom: 1%;
+    left: 35%;
+    cursor: pointer;
+}
+
+.next-button {
+    height: 6vh;
+    width: 10vw;
+    background: url("./assets/next_btn.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 1%;
+    right: 16%;
+    cursor: pointer;
+}
+
+.prev-button {
+    height: 6vh;
+    width: 10vw;
+    background: url("./assets/prev_btn.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 1%;
+    left: 16%;
+    cursor: pointer;
+}
+
+.title {
+    position: absolute;
+    top: 2%;
+    margin: auto;
 }

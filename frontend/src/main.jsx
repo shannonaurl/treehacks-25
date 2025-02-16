@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import Book from "./components/Book.jsx";
+import Share from "./components/Share.jsx";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
     {
         path: "/book",
         element: <Book />,
+    },
+    {
+        path: "/share",
+        element: <Share />,
     },
 ]);
 
