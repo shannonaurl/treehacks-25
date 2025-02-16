@@ -7,6 +7,7 @@ const Groq = require('groq-sdk');
 const { ElevenLabsClient, play } = require('elevenlabs');
 const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
 const supabase = createSupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const { LumaAI } = require('lumaai');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 router.get('/story', async (req, res) => {
@@ -73,7 +74,8 @@ router.get("/voice", async (req, res) => {
                     return res.status(500).json({ error: "Failed to upload audio file" });
                 }
 
-                return res.json({ url: data.fullPath });
+                const publicUrlData = await supabase.storage.from("narrator-audio-files").getPublicUrl(fileName);
+                return res.json({ url: publicUrlData.data.publicUrl });
             } catch (uploadError) {
                 console.error("Error uploading audio file:", uploadError);
                 res.status(500).json({ error: "Failed to upload audio file" });
@@ -89,6 +91,48 @@ router.get("/voice", async (req, res) => {
         console.error("Error generating speech:", error);
         res.status(500).json({ error: "Failed to generate speech" });
     }
+});
+
+const lumaClient = new LumaAI({ apiKey: process.env.LUMAAI_API_KEY });
+router.get('/image', async (req, res) => {
+    const { prompt } = req.query;
+    let generation = await lumaClient.generations.image.create({ prompt: prompt, model: "photon-flash-1" });
+
+    let completed = false;
+    while (!completed) {
+        generation = await lumaClient.generations.get(generation.id);
+
+        if (generation.state === "completed") {
+            completed = true;
+        } else if (generation.state === "failed") {
+            throw new Error(`Generation failed: ${generation.failure_reason}`);
+        } else {
+            console.log("Dreaming...");
+            await new Promise(r => setTimeout(r, 3000)); // Wait for 3 seconds
+        }
+    }
+
+    const imageUrl = generation.assets.image;
+    return res.json({ url: imageUrl });
+    // const response = await fetch(imageUrl);
+    // const fileStream = fs.createWriteStream(`${generation.id}.jpg`);
+    // await new Promise((resolve, reject) => {
+    //     response.body.pipe(fileStream);
+    //     response.body.on('error', reject);
+    //     fileStream.on('finish', resolve);
+    // });
+
+    // const fileBuffer = readFileSync(`${generation.id}.jpg`);
+    // const { data, error } = await supabase.storage.from("story-image-files").upload(`${generation.id}.jpg`, fileBuffer, {contentType: "image/jpeg"});
+    // unlink(`${generation.id}.jpg`, () => console.log("Deleted image file"));
+
+    // if (error) {
+    //     console.error("Error uploading image file:", error);
+    //     return res.status(500).json({ error: "Failed to upload image file" });
+    // }
+
+    // const publicUrlData = await supabase.storage.from("story-image-files").getPublicUrl(`${generation.id}.jpg`);
+    // return res.json({ url: publicUrlData.data.publicUrl });
 });
 
 module.exports = router;
