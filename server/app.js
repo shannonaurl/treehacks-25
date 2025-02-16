@@ -12,7 +12,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('hello from booksy!');
 });
 
 const chroma = require('./utils/chroma');
@@ -44,7 +44,10 @@ app.get('/new', async (req, res) => {
     const groqJson = await groqResponse.data.choices[0].message.content;
     console.log(groqJson);
 
+    // TODO on api.js: prompt engineer to make it into a 2 person narration and randomly ask user for next input
+
     try {
+        // parallel process image and voiceover
         const [lumaResponse, elevenResponse] = await Promise.all([
             axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson)}`),
             axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson)}`),
@@ -53,9 +56,11 @@ app.get('/new', async (req, res) => {
         const lumaJson = await lumaResponse.data.url;
         const elevenJson = await elevenResponse.data.url;
 
+        const bookId = `book-${uuidv4()}`;
+
         // push to supabase
         const { data, error } = await supabase.from('pages').insert({
-            book_id: `book-${uuidv4()}`,
+            book_id: bookId,
             text: groqJson,
             image_url: lumaJson,
             voice_url: elevenJson,
@@ -69,6 +74,58 @@ app.get('/new', async (req, res) => {
 
         return res.json({
             story: groqJson,
+            book_id: bookId,
+            image: lumaJson,
+            voice: elevenJson,
+            message: 'Page generated successfully',
+        });
+    } catch (error) {
+        console.error('Error generating page:', error);
+        return res.status(500).json({ error: 'Failed to generate page' });
+    }
+});
+
+app.get('/next', async (req, res) => {
+    const { book_id, email, prompt } = req.query;
+
+    // get past context from supabase
+    const { data: pagesData, error } = await supabase.from('pages').select('text').eq('book_id', book_id).eq('user_id', email).order('created_at', { ascending: true });
+    if (error) {
+        console.error('Error fetching pages:', error);
+        return res.status(500).json({ error: 'Failed to fetch pages' });
+    }
+
+    console.log(pagesData);
+    const pastContext = pagesData.map(page => page.text).join(' ');
+    const groqResponse = await axios.get(`${req.protocol}://${req.get('host')}/api/story?prompt=${encodeURIComponent(prompt)}&context=${encodeURIComponent(pastContext)}`);
+    const groqJson = await groqResponse.data.choices[0].message.content;
+
+    try {
+        // parallel process image and voiceover
+        const [lumaResponse, elevenResponse] = await Promise.all([
+            axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson)}`),
+            axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson)}`),
+        ]);
+
+        const lumaJson = await lumaResponse.data.url;
+        const elevenJson = await elevenResponse.data.url;
+
+        // push to supabase
+        const { data, error } = await supabase.from('pages').insert({
+            book_id: book_id,
+            text: groqJson,
+            image_url: lumaJson,
+            voice_url: elevenJson,
+        })
+
+        if (error) {
+            console.error('Error adding page:', error);
+            return res.status(500).json({ error: 'Failed to add page' });
+        }
+
+        return res.json({
+            story: groqJson,
+            book_id: book_id,
             image: lumaJson,
             voice: elevenJson,
             message: 'Page generated successfully',

@@ -11,7 +11,7 @@ const { LumaAI } = require('lumaai');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 router.get('/story', async (req, res) => {
-    const { prompt } = req.query;
+    const { context, prompt } = req.query;
     const response = await groq.chat.completions.create({
         messages: [
             {
@@ -24,7 +24,7 @@ Your sentences are short and easy to understand for the defined age bracket of c
             },
             {
                 role: "assistant", // prefilling prompt to maintain consistency and skip unnecessary introductions
-                content: "Please provide a genre for the bedtime story you would like me to generate.",
+                content: context,
             },
             {
                 role: "user", // user prompt
@@ -114,25 +114,6 @@ router.get('/image', async (req, res) => {
 
     const imageUrl = generation.assets.image;
     return res.json({ url: imageUrl });
-    // const response = await fetch(imageUrl);
-    // const fileStream = fs.createWriteStream(`${generation.id}.jpg`);
-    // await new Promise((resolve, reject) => {
-    //     response.body.pipe(fileStream);
-    //     response.body.on('error', reject);
-    //     fileStream.on('finish', resolve);
-    // });
-
-    // const fileBuffer = readFileSync(`${generation.id}.jpg`);
-    // const { data, error } = await supabase.storage.from("story-image-files").upload(`${generation.id}.jpg`, fileBuffer, {contentType: "image/jpeg"});
-    // unlink(`${generation.id}.jpg`, () => console.log("Deleted image file"));
-
-    // if (error) {
-    //     console.error("Error uploading image file:", error);
-    //     return res.status(500).json({ error: "Failed to upload image file" });
-    // }
-
-    // const publicUrlData = await supabase.storage.from("story-image-files").getPublicUrl(`${generation.id}.jpg`);
-    // return res.json({ url: publicUrlData.data.publicUrl });
 });
 
 module.exports = router;
