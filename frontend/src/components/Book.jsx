@@ -83,6 +83,14 @@ const Book = () => {
 
     return (
         <div className="book-container">
+            <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.8 }}
+                className="share-btn"
+                onClick={() => {
+                    window.open(`http://localhost:5173/share?book_id=${bookId}`, "_blank");
+                }}
+            ></motion.div>
             {pages.length > 0 && <div className="speaking-mouse"></div>}
             <HTMLFlipBook width={500} height={620} className="flip-book" drawShadow={true} maxShadowOpacity={0.5} ref={bookRef}>
                 {pages.map((page, index) => (

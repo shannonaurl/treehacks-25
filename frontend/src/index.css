@@ -331,3 +331,13 @@ body {
     top: 2%;
     margin: auto;
 }
+
+.share-btn {
+    height: 6vh;
+    width: 12vw;
+    background: url("./assets/share-button.png") no-repeat center center/contain;
+    position: absolute;
+    top: 2%;
+    right: 2%;
+    cursor: pointer;
+}
