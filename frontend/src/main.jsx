@@ -4,6 +4,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.jsx";
 import Dashboard from "./components/Dashboard.jsx";
+import Book from "./components/Book.jsx";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
         exact: true,
         path: "/dashboard",
         element: <Dashboard />,
+    },
+    {
+        path: "/book",
+        element: <Book />,
     },
 ]);
 
