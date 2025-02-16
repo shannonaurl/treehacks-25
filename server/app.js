@@ -41,7 +41,8 @@ app.get('/new', async (req, res) => {
     const groqPrompt = `Tell me a ${genre} story!`;
     console.log(`${req.protocol}://${req.get('host')}/api/story?prompt=${encodeURIComponent(groqPrompt)}`);
     const groqResponse = await axios.get(`${req.protocol}://${req.get('host')}/api/story?prompt=${encodeURIComponent(groqPrompt)}`);
-    const groqJson = await groqResponse.data.choices[0].message.content;
+    let groqJson = await groqResponse.data.choices[0].message.content;
+    groqJson = JSON.parse(groqJson);
     console.log(groqJson);
 
     // TODO on api.js: prompt engineer to make it into a 2 person narration and randomly ask user for next input
@@ -49,8 +50,8 @@ app.get('/new', async (req, res) => {
     try {
         // parallel process image and voiceover
         const [lumaResponse, elevenResponse] = await Promise.all([
-            axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson)}`),
-            axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson)}`),
+            axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson.story)}`),
+            axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson.story)}`),
         ]);
 
         const lumaJson = await lumaResponse.data.url;
@@ -61,7 +62,7 @@ app.get('/new', async (req, res) => {
         // push to supabase
         const { data, error } = await supabase.from('pages').insert({
             book_id: bookId,
-            text: groqJson,
+            text: groqJson.story,
             image_url: lumaJson,
             voice_url: elevenJson,
             user_id: email,
@@ -73,7 +74,8 @@ app.get('/new', async (req, res) => {
         }
 
         return res.json({
-            story: groqJson,
+            story: groqJson.story,
+            pause_for_input: groqJson.pause_for_input,
             book_id: bookId,
             image: lumaJson,
             voice: elevenJson,
@@ -98,22 +100,27 @@ app.get('/next', async (req, res) => {
     console.log(pagesData);
     const pastContext = pagesData.map(page => page.text).join(' ');
     const groqResponse = await axios.get(`${req.protocol}://${req.get('host')}/api/story?prompt=${encodeURIComponent(prompt)}&context=${encodeURIComponent(pastContext)}`);
-    const groqJson = await groqResponse.data.choices[0].message.content;
+    let groqJson = await groqResponse.data.choices[0].message.content;
+    groqJson = JSON.parse(groqJson);
+
+    console.log(groqJson);
 
     try {
         // parallel process image and voiceover
         const [lumaResponse, elevenResponse] = await Promise.all([
-            axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson)}`),
-            axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson)}`),
+            axios.get(`${req.protocol}://${req.get('host')}/api/image?prompt=${encodeURIComponent(groqJson.story)}`),
+            axios.get(`${req.protocol}://${req.get('host')}/api/voice?text=${encodeURIComponent(groqJson.story)}`),
         ]);
 
         const lumaJson = await lumaResponse.data.url;
+        console.log(lumaJson);
         const elevenJson = await elevenResponse.data.url;
+        console.log(elevenJson);
 
         // push to supabase
         const { data, error } = await supabase.from('pages').insert({
             book_id: book_id,
-            text: groqJson,
+            text: groqJson.story,
             image_url: lumaJson,
             voice_url: elevenJson,
         })
@@ -124,7 +131,8 @@ app.get('/next', async (req, res) => {
         }
 
         return res.json({
-            story: groqJson,
+            story: groqJson.story,
+            pause_for_input: groqJson.pause_for_input,
             book_id: book_id,
             image: lumaJson,
             voice: elevenJson,
