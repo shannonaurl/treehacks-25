@@ -11,6 +11,32 @@ body {
     background-color: var(--bg);
     font-family: "Jua", sans-serif;
     font-style: normal;
+    overflow: hidden;
+}
+
+.landing-main {
+    height: 100vh;
+    width: 100vw;
+    background: url("./assets/landing.png") no-repeat center center/cover;
+}
+
+.door {
+    height: 52vh;
+    width: 20vw;
+    background: url("./assets/door.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 21%;
+    left: 39%;
+}
+
+.enter-btn {
+    height: 10vh;
+    width: 20vw;
+    background: url("./assets/Enter_btn.png") no-repeat center center/contain;
+    position: absolute !important;
+    bottom: 10%;
+    left: 40%;
+    cursor: pointer;
 }
 
 .background {
@@ -19,6 +45,42 @@ body {
     background: url("./assets/bg.png") no-repeat center center/cover;
     position: absolute;
     z-index: -1;
+}
+
+.nav {
+    position: absolute;
+    top: 2%;
+    right: 1%;
+    display: flex;
+}
+
+.icons {
+    height: 5vh;
+    width: 6vw;
+    cursor: pointer;
+}
+
+.fav {
+    background: url("./assets/fav-icon.png") no-repeat center center/contain;
+}
+
+.settings {
+    height: 4.5vh;
+    background: url("./assets/settings-icon.png") no-repeat center center/contain;
+}
+
+.profile {
+    background: url("./assets/profile-icon.png") no-repeat center center/contain;
+}
+
+.booksy-logo {
+    height: 7vh;
+    width: 8vw;
+    background: transparent;
+    position: absolute;
+    top: 2.5%;
+    left: 3%;
+    cursor: pointer;
 }
 
 .create-new {
@@ -38,6 +100,15 @@ body {
     position: absolute;
     bottom: 0%;
     left: 1%;
+}
+
+.mouse-message {
+    height: 20vh;
+    width: 20vw;
+    background: url("./assets/message.png") no-repeat center center/contain;
+    position: absolute;
+    bottom: 38%;
+    left: 2%;
 }
 
 .modal {
@@ -61,9 +132,9 @@ body {
 
 .close {
     position: absolute;
-    font-size: 4vw;
-    top: 0;
-    right: 3%;
+    font-size: 3vw;
+    top: 1.5%;
+    right: 2.5%;
     cursor: pointer;
     margin-top: -6px;
 }
