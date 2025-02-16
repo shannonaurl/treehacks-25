@@ -5,13 +5,13 @@ const { v4: uuidv4 } = require('uuid');
 const router = require('express').Router();
 const Groq = require('groq-sdk');
 const { ElevenLabsClient, play } = require('elevenlabs');
-const { createClient: createSupabaseClient } = require('@supabase/supabase-js');
-const supabase = createSupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = require('../utils/supabase');
+const chroma = require('../utils/chroma');
 const { LumaAI } = require('lumaai');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 router.get('/story', async (req, res) => {
-    const { genre } = req.query;
+    const { prompt } = req.query;
     const response = await groq.chat.completions.create({
         messages: [
             {
@@ -28,14 +28,14 @@ Your sentences are short and easy to understand for the defined age bracket of c
             },
             {
                 role: "user", // user prompt
-                content: genre,
+                content: prompt,
             }
         ],
 
         model: "llama3-70b-8192",
 
         temperature: 0.5,
-        max_completion_tokens: 500,
+        max_completion_tokens: 100,
         top_p: 1,
         stop: null,
         stream: false,
